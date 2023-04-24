@@ -1,7 +1,8 @@
 from controller import *
 
 def load_routes(app):
-    app.add_url_rule('/personal', view_func= personalController.get_personal)
+    app.add_url_rule('/personal/', view_func= personalController.get_personal, methods=['GET'])
+    app.add_url_rule('/personal/<string:nombre>', view_func= personalController.get_personal_by_name, methods=['GET'])
     app.add_url_rule('/cargos', view_func=cargosController.get_cargos)
     app.add_url_rule('/contratos', view_func=contratosController.get_contratos)
     app.add_url_rule('/amonestaciones', view_func=amonestacionesController.get_amonestacion)
