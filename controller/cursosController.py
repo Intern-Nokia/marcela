@@ -23,6 +23,7 @@ def get_cursos():
     cursos = conn.query(Curso).all()
     result = []
     conn.close()
+    i = 0
     for curso in cursos:
         result.append(
             {
@@ -31,6 +32,8 @@ def get_cursos():
             'Duración': curso.duracion,
             'Organización que lo dicta': curso.organizacion,
             'Código SENCE': curso.codigo_sence,
-            'Precio estimado': curso.precio_estimado
+            'Precio estimado': curso.precio_estimado,
+            'image': "https://picsum.photos/200/300?random={}".format(i)
             })
+        i = i + 1
     return jsonify(result)
