@@ -8,16 +8,18 @@ app = Blueprint('personal', __name__)
 
 Base = declarative_base()
 
-#Entity Personal from database
+# Entity Personal from database
+
+
 class Personal(Base):
     __tablename__ = '100 - personal'
-    legajo = Column('Legajo' ,String, primary_key=True)
+    legajo = Column('Legajo', String, primary_key=True)
     name = Column('Nombre', String)
     last_name = Column('Apellido Paterno', String)
     rut = Column('RUT', String)
 
 
-#Get all personal
+# Get all personal
 def get_personal():
     conn = connect('root', 'root')
     personal = conn.query(Personal).all()
@@ -27,11 +29,11 @@ def get_personal():
     for person in personal:
         result.append(
             {
-            'legajo': person.legajo,
-            'name': person.name,
-            'lastName': person.last_name,
-            'RUT': person.rut,
-            'image': "https://picsum.photos/200/300?random={}".format(i)
+                'legajo': person.legajo,
+                'name': person.name,
+                'lastName': person.last_name,
+                'RUT': person.rut,
+                'image': "https://picsum.photos/200/300?random={}".format(i)
             })
         i = i + 1
 
@@ -42,8 +44,10 @@ def get_personal_by_name(nombre):
     # nombre = request.view_args['nombre']
     conn = connect('root', 'root')
     personal = conn.query(Personal).filter(or_(Personal.name.like(nombre + '%'),
-                                               Personal.legajo.like(nombre + '%'),
-                                               Personal.rut.like(nombre + '%'))).all()
+                                               Personal.legajo.like(
+                                                   nombre + '%'),
+                                               Personal.rut.like(nombre + '%'),
+                                               Personal.last_name.like(nombre + '%'))).all()
 
     result = []
     conn.close()
@@ -51,11 +55,11 @@ def get_personal_by_name(nombre):
     for person in personal:
         result.append(
             {
-            'legajo': person.legajo,
-            'name': person.name,
-            'lastName': person.last_name,
-            'RUT': person.rut,
-            'image': "https://picsum.photos/200/300?random={}".format(i)
+                'legajo': person.legajo,
+                'name': person.name,
+                'lastName': person.last_name,
+                'RUT': person.rut,
+                'image': "https://picsum.photos/200/300?random={}".format(i)
             })
         i = i + 1
 
