@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from db.connexion import connect
-from sqlalchemy import Column, String, or_
+from sqlalchemy import Column, String, or_, Integer
 from sqlalchemy.ext.declarative import declarative_base
 
 
@@ -10,53 +10,85 @@ Base = declarative_base()
 
 #Entity Personal from database
 class Personal(Base):
-    __tablename__ = '100 - personal'
-    legajo = Column('Legajo' ,String, primary_key=True)
-    name = Column('Nombre', String)
-    last_name = Column('Apellido Paterno', String)
-    rut = Column('RUT', String)
-
+    __tablename__ = 'users'
+    empresa = Column(String)
+    trabajador = Column(String)
+    CI = Column(String, primary_key=True)
+    cargo = Column(String)
+    habilitadoBHP = Column('Habilitado BHP LMS', String)
+    nacionalidad = Column(String)
+    fechaNacimiento = Column('Fecha Nacimiento', String)
+    correo = Column('Correo electrónico', String)
+    telefono = Column('Número de teléfono', String)
+    edad = Column(String)
+    fechaVencimientoCI = Column('Fecha vencimiento CI', String)
+    vigenciaVisa = Column('Vigencia Visa', String)
+    proyectoActual = Column('Proyecto actual', String)
+    correoPersonal =  Column('Correo personal', String)
+    inicioContrato = Column('Inicio de contrato', String)
+    direccion = Column('Dirección', String)
+    comuna = Column(String)
+    ciudad = Column(String)
+    estadoCivil = Column('ESTADO CIVIL', String)
+    activo = Column(Integer)
 
 #Get all personal
 def get_personal():
     conn = connect('root', 'root')
-    personal = conn.query(Personal).all()
+    personal = conn.query(Personal).filter(Personal.activo == 1).all()
     result = []
     conn.close()
-    i = 0
     for person in personal:
         result.append(
             {
-            'legajo': person.legajo,
-            'name': person.name,
-            'lastName': person.last_name,
-            'RUT': person.rut,
-            'image': "https://picsum.photos/200/300?random={}".format(i)
-            })
-        i = i + 1
+            'empresa': person.empresa,
+            'trabajador': person.trabajador,
+            'CI' : person.CI,
+            'cargo' : person.cargo,
+            'habilitadoBHP' : person.habilitadoBHP,
+            'nacionalidad' : person.nacionalidad,
+            'fechaNacimiento' : person.fechaNacimiento,
+            'correo' : person.correo,
+            'telefono' : person.telefono,
+            'edad' : person.edad,
+            'fechaVencimientoCI' : person.fechaVencimientoCI,
+            'vigenciaVisa' : person.vigenciaVisa,
+            'proyectoActual' : person.proyectoActual,
+            'correoPersonal' :  person.correoPersonal,
+            'inicioContrato' : person.inicioContrato,
+            'direccion': person.direccion,
+            'comuna' : person.comuna,
+            'ciudad' : person.ciudad,
+            'estadoCivil' : person.estadoCivil,
+            'activo' : person.activo
+        }
+        )
 
+    # print(personal)
     return jsonify(result)
 
 
-def get_personal_by_name(nombre):
-    # nombre = request.view_args['nombre']
+def add_personal():
+    data = request.get_json()
+    new_user = Personal(**data)
+    new_user.activo = 1
+    
     conn = connect('root', 'root')
-    personal = conn.query(Personal).filter(or_(Personal.name.like(nombre + '%'),
-                                               Personal.legajo.like(nombre + '%'),
-                                               Personal.rut.like(nombre + '%'))).all()
 
-    result = []
+    conn.add(new_user)
+    conn.commit()
+
     conn.close()
-    i = 0
-    for person in personal:
-        result.append(
-            {
-            'legajo': person.legajo,
-            'name': person.name,
-            'lastName': person.last_name,
-            'RUT': person.rut,
-            'image': "https://picsum.photos/200/300?random={}".format(i)
-            })
-        i = i + 1
 
-    return jsonify(result)
+    return {"message": 'OK'}
+
+
+def delete_personal(rut):
+
+    conn = connect('root', 'root')
+    user = conn.query(Personal).get(rut)
+    user.activo = 0
+    conn.commit()
+    conn.close()
+
+    return 'Usuario eliminado correctamente' 

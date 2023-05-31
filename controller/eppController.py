@@ -9,16 +9,14 @@ Base = declarative_base()
 
 # Entity EPP from database
 class EPP(Base):
-    __tablename__ = '131 - epp'
-    id_epp = Column('ID EPP', Integer, primary_key=True, autoincrement=True)
-    epp_nombre = Column('EPP nombre', String(45))
-    epp_descripcion = Column('EPP descripción', Text)
-    certificado = Column('Certificado', String(45))
-    tipo_proteccion = Column('Tipo de proteccion', Text)
+    __tablename__ = 'epp'
+    epp = Column("NombreDelRequisito", String, primary_key=True)
+    vigencia = Column(String)
+    costo = Column(Integer)
+
 
 
 # Get all EPP
-@app.route('/', methods=['GET'])
 def get_epp():
     conn = connect('root', 'root')
     epps = conn.query(EPP).all()
@@ -27,10 +25,8 @@ def get_epp():
     for epp in epps:
         result.append(
             {
-                'ID EPP': epp.id_epp,
-                'EPP nombre': epp.epp_nombre,
-                'EPP descripción': epp.epp_descripcion,
-                'Certificado': epp.certificado,
-                'Tipo de proteccion': epp.tipo_proteccion
+                'epp': epp.epp,
+                'vigencia': epp.vigencia,
+                'costo': epp.costo
             })
     return jsonify(result)

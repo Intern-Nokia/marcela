@@ -8,10 +8,12 @@ app = Blueprint('examenes', __name__)
 Base = declarative_base()
 
 class Examen(Base):
-    __tablename__ = '141 - examenes'
-    id_examen = Column('ID Examen', Integer, primary_key=True, autoincrement=True)
-    nombre_examen = Column('Nombre examen', String(45))
-    observaciones = Column('Observaciones', Text)
+    __tablename__ = 'examenes'
+    nombre = Column("NombredelRequisito", String, primary_key=True)
+    institucion = Column(String)
+    vigencia = Column(String)
+    costo = Column(Integer)
+
 
 @app.route('/', methods=['GET'])
 def get_examenes():
@@ -22,9 +24,10 @@ def get_examenes():
     for examen in examenes:
         result.append(
             {
-                'ID Examen': examen.id_examen,
-                'Nombre examen': examen.nombre_examen,
-                'Observaciones': examen.observaciones
+                'nombre': examen.nombre,
+                'institucion': examen.institucion,
+                'vigencia': examen.vigencia,
+                'costo': examen.costo
             }
         )
     return jsonify(result)

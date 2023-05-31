@@ -9,14 +9,11 @@ Base = declarative_base()
 
 # Entity OtrosRequisitosPorPerfil from database
 class OtrosRequisitosPorPerfil(Base):
-    __tablename__ = '240 - otros requisitos por perfil'
-    id_requisito = Column('ID Requisito', Integer, primary_key=True, autoincrement=True)
-    requisito = Column('Requisito', String(45))
-    perfil = Column('Perfil', Integer)
+    __tablename__ = 'otros'
+    nombre = Column("NombredelRequisito", String, primary_key=True)
 
 
 # Get all OtrosRequisitosPorPerfil
-@app.route('/', methods=['GET'])
 def get_otros_requisitos_perfil():
     conn = connect('root', 'root')
     otros_requisitos_perfil = conn.query(OtrosRequisitosPorPerfil).all()
@@ -25,8 +22,6 @@ def get_otros_requisitos_perfil():
     for otro_requisito_perfil in otros_requisitos_perfil:
         result.append(
             {
-                'ID Requisito': otro_requisito_perfil.id_requisito,
-                'Requisito': otro_requisito_perfil.requisito,
-                'Perfil': otro_requisito_perfil.perfil
+                'nombre': otro_requisito_perfil.nombre
             })
     return jsonify(result)

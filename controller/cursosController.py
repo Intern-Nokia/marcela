@@ -7,33 +7,56 @@ Base = declarative_base()
 
 app = Blueprint('cursos', __name__)
 
+class CursosUsuario(Base):
+    __tablename__ = 'cursos_usuario'
+    id = Column(Integer, primary_key=True)
+    CI = Column(String)
+    curso = Column(String)
+    fecha_realizacion = Column(String)
+    fecha_vencimiento = Column(String)
+    url_certificado = Column(String)
+
 
 class Curso(Base):
-    __tablename__ = '121 - cursos'
-    id_curso = Column('ID Curso', Integer, primary_key=True, autoincrement=True)
-    nombre_curso = Column('Nombre curso', String(45))
-    duracion = Column('Duración', Integer)
-    organizacion = Column('Organización que lo dicta', String(45))
-    codigo_sence = Column('Código SENCE', String(45))
-    precio_estimado = Column('Precio estimado', Integer)
+    __tablename__ = 'cursos'
+    nombre = Column("NombredelRequisito", String, primary_key=True)
+    institucion = Column(String)
+    modalidad = Column("Online/Presencial", String)
+    vigencia = Column(String)
+    costo = Column(Integer)
 
-@app.route('/', methods=['GET'])
 def get_cursos():
     conn = connect('root', 'root')
     cursos = conn.query(Curso).all()
     result = []
     conn.close()
-    i = 0
     for curso in cursos:
         result.append(
             {
-            'ID Curso': curso.id_curso,
-            'Nombre curso': curso.nombre_curso,
-            'Duración': curso.duracion,
-            'Organización que lo dicta': curso.organizacion,
-            'Código SENCE': curso.codigo_sence,
-            'Precio estimado': curso.precio_estimado,
-            'image': "https://picsum.photos/200/300?random={}".format(i)
-            })
-        i = i + 1
+                'nombre': curso.nombre,
+                'institucion': curso.institucion,
+                'modalidad': curso.modalidad,
+                'vigencia': curso.vigencia,
+                'costo': curso.costo
+            }
+        )
+    return jsonify(result)
+
+def get_cursos_usuario_CI(CI):
+    conn = connect('root', 'root')
+    cursos = conn.query(CursosUsuario).filter(CursosUsuario.CI == CI).all()
+    result = []
+    conn.close()
+    for curso in cursos:
+        result.append(
+            {
+                'id': curso.id,
+                'CI': curso.CI,
+                'curso': curso.curso,
+                'fecha_realizacion': curso.fecha_realizacion,
+                'fecha_vencimiento': curso.fecha_vencimiento,
+                'url_certificado': curso.url_certificado 
+            }
+        )
+
     return jsonify(result)
