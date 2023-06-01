@@ -7,6 +7,13 @@ app = Blueprint('epp', __name__)
 
 Base = declarative_base()
 
+class EPPUsuario(Base):
+    __tablename__ = 'epp_usuario'
+    id  = Column('idepp_usuario', Integer, primary_key=True, autoincrement=True)
+    rut = Column(String)
+    nombreEpp = Column(String)
+    fechaEntrega = Column(String)
+
 # Entity EPP from database
 class EPP(Base):
     __tablename__ = 'epp'
@@ -28,5 +35,18 @@ def get_epp():
                 'epp': epp.epp,
                 'vigencia': epp.vigencia,
                 'costo': epp.costo
+            })
+    return jsonify(result)
+
+def get_epp_usuario(rut):
+    conn = connect('root', 'root')
+    epps = conn.query(EPPUsuario).filter(EPPUsuario.rut == rut).all()
+    result = []
+    conn.close()
+    for epp in epps:
+        result.append(
+            {
+                'nombre': epp.nombreEpp,
+                'fechaEntrega': epp.fechaEntrega,
             })
     return jsonify(result)

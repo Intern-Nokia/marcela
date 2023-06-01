@@ -8,15 +8,17 @@ app = Blueprint('otros_requisitos_perfil', __name__)
 Base = declarative_base()
 
 # Entity OtrosRequisitosPorPerfil from database
-class OtrosRequisitosPorPerfil(Base):
-    __tablename__ = 'otros'
-    nombre = Column("NombredelRequisito", String, primary_key=True)
+class OtrosUsuario(Base):
+    __tablename__ = 'otros_usuario'
+    id = Column("idotros_usuario", primary_key=True, autoincrement=True)
+    nombre = Column("nombreOtro", String)
+    rut = Column(String)
 
 
 # Get all OtrosRequisitosPorPerfil
-def get_otros_requisitos_perfil():
+def get_otros_usuario(rut):
     conn = connect('root', 'root')
-    otros_requisitos_perfil = conn.query(OtrosRequisitosPorPerfil).all()
+    otros_requisitos_perfil = conn.query(OtrosUsuario).filter(OtrosUsuario.rut == rut).all()
     result = []
     conn.close()
     for otro_requisito_perfil in otros_requisitos_perfil:

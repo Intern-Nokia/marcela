@@ -21,14 +21,14 @@ def load_routes(app):
     
     #RUTAS DEL EPP
     app.add_url_rule('/epp', view_func=eppController.get_epp)
-    app.add_url_rule('/epp-perfil', view_func=EPPPorPerfilController.get_epp_por_perfil)
+    app.add_url_rule('/epp/<string:rut>', view_func=eppController.get_epp_usuario, methods=['GET'])
 
     #RUTAS DE LOS EXAMENES
     app.add_url_rule('/examenes', view_func=examenesController.get_examenes)
     app.add_url_rule('/examenes-perfil', view_func=examenPorPerfilController.get_examenes_por_perfil)
     
     #RUTAS DE OTROS
-    app.add_url_rule('/otros', view_func=otrosRequistosPorPerfilController.get_otros_requisitos_perfil)
+    app.add_url_rule('/otros/<string:rut>', view_func=otrosRequistosPorPerfilController.get_otros_usuario, methods=['GET'])
     
     
     app.add_url_rule('/perfil-requisitos', view_func=perfilesRequisitosController.get_perfil_requisito)
