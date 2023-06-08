@@ -1,46 +1,46 @@
 from flask import jsonify, request
 from db.connexion import connect
-from models.examenes import Examen
 
-def get_examenes():
+from models.otros import Otro
+
+def get_otros():
     conn = connect('root', 'root')
-    examenes = conn.query(Examen).all()
+    otros = conn.query(Otro).all()
     result = []
     conn.close()
-    for examen in examenes:
+    for otro in otros:
         result.append(
             {
-                'id': examen.id,
-                'nombre': examen.nombre,
-                'institucion': examen.institucion,
-                'vigencia': examen.vigencia,
-                'costo': examen.costo
+                'id': otro.id,
+                'nombre': otro.nombre,
+                'vigencia': otro.vigencia,
+                'costo': otro.costo
             }
         )
     return jsonify(result)
 
-def add_examen():
+def add_otro():
     conn = connect('root', 'root')
     
     try:
         data = request.get_json()
-        new_examen = Examen(**data)
-        conn.add(new_examen)
+        new_otro = Otro(**data)
+        conn.add(new_otro)
         conn.commit()
         conn.close()
-        return 'Exámen creado correctamente', 201
+        return 'Otro requisito creado correctamente', 201
     except Exception as e:
-        return 'Error al crear el exámen: {}'.format(e)
+        return 'Error al crear otro requisito: {}'.format(e)
     
-def edit_examen(id_examen):
+def edit_otro(id_otro):
     conn = connect('root', 'root')
-    examen = conn.query(Examen).get(id_examen)
+    otro = conn.query(Otro).get(id_otro)
 
-    if examen:
+    if otro:
         data = request.get_json()
 
         for key, value in data.items():
-            setattr(examen, key, value)
+            setattr(otro, key, value)
         
         conn.commit()
         conn.close()

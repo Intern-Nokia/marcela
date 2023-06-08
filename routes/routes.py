@@ -1,52 +1,62 @@
 from controller import *
+from controller import otrosRequisitosController
 
 def load_routes(app):
     # RUTAS DE USUARIOS
     app.add_url_rule('/personal/', view_func= personalController.get_personal, methods=['GET'])
     app.add_url_rule('/personal/<string:rut>', view_func=personalController.delete_personal, methods=['PATCH'])
     app.add_url_rule('/personal/', view_func= personalController.add_personal, methods=['POST'])
+    app.add_url_rule('/personal/<string:rut>', view_func= personalController.edit_persona, methods=['PUT'])
 
-    # app.add_url_rule('/personal/<string:nombre>', view_func= personalController.get_personal_by_name, methods=['GET'])
-    app.add_url_rule('/cargos', view_func=cargosController.get_cargos)
-    app.add_url_rule('/contratos', view_func=contratosController.get_contratos)
-    app.add_url_rule('/amonestaciones', view_func=amonestacionesController.get_amonestacion)
-    app.add_url_rule('/asignacion-perfiles', view_func=asignacionPerfilesController.get_asignacion_perfiles)
-    app.add_url_rule('/certificado-antecedentes', view_func=certificadoAntecedentesController.get_certificado)
-    
     #RUTAS CURSOS
-    app.add_url_rule('/cursos', view_func=cursosController.get_cursos)
-    app.add_url_rule('/cursos/<string:CI>', view_func=cursosController.get_cursos_usuario_CI, methods=['GET'])
-    app.add_url_rule('/cursos-perfil', view_func=cursosPorPerfilController.get_cursos_perfil)
-    app.add_url_rule('/dotacion', view_func=dotacionController.get_dotacion_2013_01)
+    app.add_url_rule('/cursos', view_func=cursosController.get_cursos, methods=['GET'])
+    app.add_url_rule('/cursos', view_func=cursosController.add_curso, methods=['POST'])
+    app.add_url_rule('/cursos/<int:id_curso>', view_func=cursosController.edit_curso, methods=['PUT'])
+
+    #RUTAS DOTACION
+    app.add_url_rule('/dotacion', view_func=dotacionController.get_dotacion, methods=['GET'])
+    app.add_url_rule('/dotacion', view_func=dotacionController.add_dotacion, methods=['POST'])
+    app.add_url_rule('/dotacion/<int:id_dotacion>', view_func=dotacionController.edit_dotacion, methods=['PUT'])
     
-    #RUTAS DEL EPP
-    app.add_url_rule('/epp', view_func=eppController.get_epp)
-    app.add_url_rule('/epp/<string:rut>', view_func=eppController.get_epp_usuario, methods=['GET'])
 
     #RUTAS DE LOS EXAMENES
-    app.add_url_rule('/examenes', view_func=examenesController.get_examenes)
-    app.add_url_rule('/examenes-perfil', view_func=examenPorPerfilController.get_examenes_por_perfil)
-    
+    app.add_url_rule('/examenes', view_func=examenesController.get_examenes, methods=['GET'])
+    app.add_url_rule('/examenes', view_func=examenesController.add_examen, methods=['POST'])
+    app.add_url_rule('/examenes/<int:id_examen>', view_func=examenesController.edit_examen, methods=['PUT'])
+
     #RUTAS DE OTROS
-    app.add_url_rule('/otros/<string:rut>', view_func=otrosRequistosPorPerfilController.get_otros_usuario, methods=['GET'])
+    app.add_url_rule('/otros', view_func=otrosRequisitosController.get_otros, methods=['GET'])
+    app.add_url_rule('/otros', view_func=otrosRequisitosController.add_otro, methods=['POST'])
+    app.add_url_rule('/otros/<int:id_otro>', view_func=otrosRequisitosController.edit_otro, methods=['PUT'])
     
-    
-    app.add_url_rule('/perfil-requisitos', view_func=perfilesRequisitosController.get_perfil_requisito)
-    app.add_url_rule('/recursos', view_func=recursosController.get_recurso)
-    app.add_url_rule('/registro-capacitacion', view_func=registroCapacitaciones.get_registro_capacitacion)
-    app.add_url_rule('/registro-DAS', view_func=registroEntregaDAS.get_registro_entrega_das)
-    app.add_url_rule('/registro-EPP', view_func=registroEntregaEPP.get_registro_entrega_epp)
-    app.add_url_rule('/registro-RI', view_func=registroEntregaRI.get_registro_entrega_ri)
-    app.add_url_rule('/registro-examenes', view_func=registroExamenesController.get_registro_examenes)
-    app.add_url_rule('/reglamento-interno', view_func=reglamentosInternosController.get_reglamentos_internos)
+    #RUTAS PERFILES
+    app.add_url_rule('/perfil', view_func=perfilesRequisitosController.get_perfiles, methods=['GET'])
+    app.add_url_rule('/perfil', view_func=perfilesRequisitosController.add_perfil, methods=['POST'])
+    app.add_url_rule('/perfil/<int:id_perfil>', view_func=perfilesRequisitosController.edit_perfil, methods=['PUT'])
 
 
+    #RUTAS ASIGNACIONES
+    #PERFILES POR PERSONA
+    app.add_url_rule('/perfil/personas', view_func=asignacionesController.get_perfiles_por_persona, methods=['GET'])
+    #CURSOS POR PERFIL
+    app.add_url_rule('/perfil/cursos', view_func=asignacionesController.get_cursos_por_perfil, methods=['GET'])
+    #EXAMENES POR PERFIL
+    app.add_url_rule('/perfil/examenes', view_func=asignacionesController.get_examenes_por_perfil, methods=['GET'])
+    # OTROS REQUISITOS POR PERFIL
+    app.add_url_rule('/perfil/otros', view_func=asignacionesController.get_otros_por_perfil, methods=['GET'])
+    # DOTACION POR PERFIL
+    app.add_url_rule('/perfil/dotacion', view_func=asignacionesController.get_dotacion_por_perfil, methods=['GET'])
 
 
-
-
-
-
+    #RUTAS CUMPLIMIENTOS
+    #CURSOS POR PERSONA
+    app.add_url_rule('/personal/cursos', view_func=cumplimientosController.get_cursos_por_persona, methods=['GET'])
+    #EXAMENES POR PERSONA
+    app.add_url_rule('/personal/examenes', view_func=cumplimientosController.get_examenes_por_persona, methods=['GET'])
+    #OTROS REQUISITOS POR PERSONA
+    app.add_url_rule('/personal/otros', view_func=cumplimientosController.get_otros_por_persona, methods=['GET'])
+    #DOTACION POR PERSONA
+    app.add_url_rule('/personal/dotacion', view_func=cumplimientosController.get_dotacion_por_persona, methods=['GET'])
 
 
 

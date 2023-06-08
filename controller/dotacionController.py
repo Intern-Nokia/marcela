@@ -1,38 +1,53 @@
-from flask import Blueprint, jsonify
+from flask import jsonify, request
 from db.connexion import connect
-from sqlalchemy import Column, String
-from sqlalchemy.ext.declarative import declarative_base
 
-app = Blueprint('dotacion_2013_01', __name__)
-
-Base = declarative_base()
-
-# Entity Dotacion201301 from database
-class Dotacion201301(Base):
-    __tablename__ = 'dotacion 2013-01'
-    legajo = Column('Legajo', String(50), primary_key=True)
-    apellido1 = Column('Apellido 1', String(45))
-    apellido2 = Column('Apellido 2', String(45))
-    nombre1 = Column('Nombre 1', String(45))
-    nombre2 = Column('Nombre 2', String(45))
-    rut = Column('RUT', String(45))
+from models.dotacion import Dotacion
 
 
-# Get all Dotacion201301
-@app.route('/', methods=['GET'])
-def get_dotacion_2013_01():
+def get_dotacion():
     conn = connect('root', 'root')
-    dotacion_2013_01 = conn.query(Dotacion201301).all()
+    dotaciones = conn.query(Dotacion).all()
     result = []
     conn.close()
-    for empleado in dotacion_2013_01:
+    for dotacion in dotaciones:
         result.append(
             {
-                'Legajo': empleado.legajo,
-                'Apellido 1': empleado.apellido1,
-                'Apellido 2': empleado.apellido2,
-                'Nombre 1': empleado.nombre1,
-                'Nombre 2': empleado.nombre2,
-                'RUT': empleado.rut
-            })
+                'id': dotacion.id,
+                'nombre': dotacion.nombre,
+                'vigencia': dotacion.vigencia,
+                'costo': dotacion.costo
+            }
+        )
     return jsonify(result)
+
+def add_dotacion():
+    conn = connect('root', 'root')
+    
+    try:
+        data = request.get_json()
+        new_dotacion = Dotacion(**data)
+        conn.add(new_dotacion)
+        conn.commit()
+        conn.close()
+        return 'Dotación creada correctamente', 201
+    except Exception as e:
+        return 'Error al crear el curso: {}'.format(e)
+    
+def edit_dotacion(id_dotacion):
+    conn = connect('root', 'root')
+    dotacion = conn.query(Dotacion).get(id_dotacion)
+
+    if dotacion:
+        data = request.get_json()
+
+        for key, value in data.items():
+            setattr(dotacion, key, value)
+        
+        conn.commit()
+        conn.close()
+        return 'Dotación actualizada exitosamente', 204
+    
+    else:
+        conn.close()
+        return 'No se encontro la dotación', 404
+
