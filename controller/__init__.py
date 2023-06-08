@@ -4,7 +4,7 @@ __all__ = [
             'cursosController', 
             'dotacionController',
             'examenesController', 
-            'otrosRequistosController',
+            'otrosRequisitosController',
             'perfilesRequisitosController', 
             'personalController'
           ]
