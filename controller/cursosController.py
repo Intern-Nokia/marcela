@@ -31,6 +31,7 @@ def add_curso():
         conn.close()
         return 'Curso creado correctamente', 201
     except Exception as e:
+        print(f'Error: {e}')
         return 'Error al crear el curso: {}'.format(e)
     
 def edit_curso(id_curso):

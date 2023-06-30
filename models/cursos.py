@@ -7,9 +7,9 @@ Base = declarative_base()
 class Curso(Base):
     __tablename__ = 'cursos'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    nombre = Column(String(50))
-    institucion = Column(String(50))
-    modalidad = Column(String(50))
+    nombre = Column(String(150))
+    institucion = Column(String(150))
+    modalidad = Column(String(150))
     vigencia = Column(Integer)
     costo = Column(Float)
 

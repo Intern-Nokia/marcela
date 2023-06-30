@@ -1,8 +1,6 @@
 from datetime import date
-from sqlalchemy import BigInteger, Boolean, Column, Date, Integer, String
+from sqlalchemy import Column, Date, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import column_property
-from sqlalchemy.sql import func
 
 Base = declarative_base()
 
@@ -17,24 +15,24 @@ def calcular_edad(fecha_nacimiento):
 #Entity Personal from database
 class Personal(Base):
     __tablename__ = 'personal'
-    empresa = Column(String(50))
-    trabajador = Column(String(50))
-    CI = Column(String(50), primary_key=True)
-    cargo = Column(String(50))
-    habilitado_BHP = Column(Boolean)
-    nacionalidad = Column(String(50))
+    empresa = Column(String(150))
+    trabajador = Column(String(150))
+    tipo_identificacion = Column(String(50))
+    CI = Column(String(150), primary_key=True)
+    cargo = Column(String(150))
+    nacionalidad = Column(String(150))
     fecha_nacimiento = Column(Date)
-    correo = Column(String(50))
-    telefono = Column(BigInteger)
-    fecha_vencimiento_CI = Column(Date)
-    vigencia_visa = Column(String(50))
-    proyecto_actual = Column(String(50))
-    correo_personal =  Column(String(50))
-    inicio_contrato = Column(Date)
-    direccion = Column(String(50))
-    comuna = Column(String(50))
-    ciudad = Column(String(50))
-    estado_civil = Column(String(50))
+    correo = Column(String(150))
+    telefono = Column(String(150))
+    fecha_vencimiento_CI = Column(String(50))
+    vigencia_visa = Column(String(150))
+    proyecto_actual = Column(String(150))
+    correo_personal =  Column(String(150))
+    inicio_contrato = Column(String(50))
+    direccion = Column(String(150))
+    comuna = Column(String(150))
+    ciudad = Column(String(150))
+    estado_civil = Column(String(150))
     activo = Column(Integer, default=1)
 
     def __to_dict__(self):
@@ -42,8 +40,8 @@ class Personal(Base):
             'empresa': self.empresa,
             'trabajador': self.trabajador,
             'CI': self.CI,
+            'tipo_identificacion': self.tipo_identificacion,
             'cargo': self.cargo,
-            'habilitado_BHP': self.habilitado_BHP,
             'nacionalidad': self.nacionalidad,
             'fecha_nacimiento': self.fecha_nacimiento,
             'correo': self.correo,

@@ -1,7 +1,8 @@
-from flask import jsonify
+from flask import jsonify, request
 from db.connexion import connect
+from sqlalchemy import and_
 
-from models.asignaciones import AsignacionCurso, AsignacionDotacion, AsignacionOtros, AsignacionPerfil
+from models.asignaciones import AsignacionCurso, AsignacionDotacion, AsignacionExamen, AsignacionOtros, AsignacionPerfil
 from models.cursos import Curso
 from models.examenes import Examen
 from models.perfil import Perfil
@@ -55,12 +56,12 @@ def get_perfiles_por_persona():
 
 def get_examenes_por_perfil():
     conn = connect('root', 'root')
-    examenes_persona = conn.query(AsignacionOtros, Perfil, Examen).join(Perfil, Perfil.id == AsignacionOtros.perfil).join(Examen, Examen.id == AsignacionOtros.examen).all()
+    examenes_persona = conn.query(AsignacionExamen, Perfil, Examen).join(Perfil, Perfil.id == AsignacionExamen.perfil).join(Examen, Examen.id == AsignacionExamen.examen).all()
     result = []
     conn.close()
 
     for row in examenes_persona:
-        asignacion = row.AsignacionOtros.__to_dict__()
+        asignacion = row.AsignacionExamen.__to_dict__()
         perfil = row.Perfil.__to_dict__()
         examen = row.Examen.__to_dict__()
 
@@ -103,7 +104,7 @@ def get_dotacion_por_perfil():
     conn.close()
 
     for row in dotacion_persona:
-        asignacion = row.AsignacionDotacions.__to_dict__()
+        asignacion = row.AsignacionDotacion.__to_dict__()
         perfil = row.Perfil.__to_dict__()
         dotacion = row.Dotacion.__to_dict__()
 
@@ -116,3 +117,90 @@ def get_dotacion_por_perfil():
             inner_join
         )
     return jsonify(result)
+
+def add_curso_perfil():
+    conn = connect('root', 'root')
+
+    try:
+        data = request.get_json()
+        new_curso_perfil = AsignacionCurso(**data)
+        existe = conn.query(AsignacionCurso).filter(and_(AsignacionCurso.curso==data['curso'], AsignacionCurso.perfil==data['perfil'])).first()
+        if existe:
+            return jsonify({'error': 'El perfil ya tiene este requisito'}), 409
+        else:
+            conn.add(new_curso_perfil)
+            conn.commit()
+            conn.close()
+            return jsonify({'message': 'Requisito añadido exitosamente'}), 201
+    except Exception as e:
+        return jsonify({'error': e})
+
+
+def add_examen_perfil():
+    conn = connect('root', 'root')
+
+    try:
+        data = request.get_json()
+        new_examen_perfil = AsignacionExamen(**data)
+        existe = conn.query(AsignacionExamen).filter(and_(AsignacionExamen.examen==data['examen'], AsignacionExamen.perfil==data['perfil'])).first()
+        if existe:
+            return jsonify({'error': 'El perfil ya tiene este requisito'}), 409
+        else:
+            conn.add(new_examen_perfil)
+            conn.commit()
+            conn.close()
+            return jsonify({'message': 'Requisito añadido exitosamente'}), 201
+    except Exception as e:
+        return jsonify({'error': e})
+    
+def add_dotacion_perfil():
+    conn = connect('root', 'root')
+
+    try:
+        data = request.get_json()
+        new_dotacion_perfil = AsignacionDotacion(**data)
+        existe = conn.query(AsignacionDotacion).filter(and_(AsignacionDotacion.dotacion==data['dotacion'], AsignacionDotacion.perfil==data['perfil'])).first()
+        if existe:
+            return jsonify({'error': 'El perfil ya tiene este requisito'}), 409
+        else:
+            conn.add(new_dotacion_perfil)
+            conn.commit()
+            conn.close()
+            return jsonify({'message': 'Requisito añadido exitosamente'}), 201
+    except Exception as e:
+        return jsonify({'error': e})
+    
+def add_otro_perfil():
+    conn = connect('root', 'root')
+
+    try:
+        data = request.get_json()
+        new_otro_perfil = AsignacionOtros(**data)
+        existe = conn.query(AsignacionOtros).filter(and_(AsignacionOtros.otro==data['otro'], AsignacionOtros.perfil==data['perfil'])).first()
+        if existe:
+            return jsonify({'error': 'El perfil ya tiene este requisito'}), 409
+        else:
+            conn.add(new_otro_perfil)
+            conn.commit()
+            conn.close()
+            return jsonify({'message': 'Requisito añadido exitosamente'}), 201
+    except Exception as e:
+        return jsonify({'error': e})
+
+def add_perfil_persona():
+    conn = connect('root', 'root')
+
+    try:
+        data = request.get_json()
+        new_asignacion_perfil = AsignacionPerfil(**data)
+        existe = conn.query(AsignacionPerfil).filter(and_(AsignacionPerfil.perfil==data['perfil'], AsignacionPerfil.persona == data['persona'])).first()
+        if existe:
+            return jsonify({'error': "El usuario ya tiene este perfil"}), 409
+        else:
+            conn.add(new_asignacion_perfil)
+            conn.commit()
+            conn.close()
+            return jsonify({'message': 'Perfil Añadido Exitosamente'}), 201
+    except Exception as e:
+        print(f'Error al asignar el perfil: {e}')
+        return f'Error al asignar el perfil: {e}'

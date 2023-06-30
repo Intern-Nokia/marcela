@@ -16,7 +16,7 @@ class Examen(Base):
         return {
             'id_examen': self.id,
             'nombre_examen': self.nombre,
-            'institucion_examne': self.institucion,
+            'institucion_examen': self.institucion,
             'vigencia_examen': self.vigencia,
             'costo_examen': self.costo
         }

@@ -10,7 +10,7 @@ from models.perfil import Base as Base_perfiles
 from models.personal import Base as Base_personal
 
 def connect(user: str, password: str):
-    engine = create_engine('mysql+pymysql://'+user+':'+password+'@localhost:3306/marcela_db')
+    engine = create_engine('mysql+pymysql://'+user+':'+password+'@localhost:3306/marcela')
 
     try:
     # Conectarse a la base de datos
@@ -32,7 +32,7 @@ def connect(user: str, password: str):
 def create_tables(user: str, password: str):
     
     try:
-        engine = create_engine('mysql+pymysql://'+user+':'+password+'@localhost:3306/marcela_db')
+        engine = create_engine('mysql+pymysql://'+user+':'+password+'@localhost:3306/marcela')
             
         #Crear las tablas
         metadata = MetaData()

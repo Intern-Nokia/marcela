@@ -6,5 +6,7 @@ __all__ = [
             'examenesController', 
             'otrosRequisitosController',
             'perfilesRequisitosController', 
-            'personalController'
+            'personalController',
+            'uploadFiles', 
+            'auth'
           ]

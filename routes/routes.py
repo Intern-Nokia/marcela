@@ -2,6 +2,13 @@ from controller import *
 from controller import otrosRequisitosController
 
 def load_routes(app):
+
+    #REGISTRAR USUARIOS
+    app.add_url_rule('/register', view_func=auth.register_user, methods=['POST'])
+    #INICIO DE SESION
+    app.add_url_rule('/login', view_func=auth.login, methods=['POST'])
+
+
     # RUTAS DE USUARIOS
     app.add_url_rule('/personal/', view_func= personalController.get_personal, methods=['GET'])
     app.add_url_rule('/personal/<string:rut>', view_func=personalController.delete_personal, methods=['PATCH'])
@@ -40,27 +47,57 @@ def load_routes(app):
     app.add_url_rule('/perfil/personas', view_func=asignacionesController.get_perfiles_por_persona, methods=['GET'])
     #CURSOS POR PERFIL
     app.add_url_rule('/perfil/cursos', view_func=asignacionesController.get_cursos_por_perfil, methods=['GET'])
+    #AÑADIR CURSOS A REQUISITOS PERFIL
+    app.add_url_rule('/perfil/cursos', view_func=asignacionesController.add_curso_perfil, methods=['POST'])
+    
     #EXAMENES POR PERFIL
     app.add_url_rule('/perfil/examenes', view_func=asignacionesController.get_examenes_por_perfil, methods=['GET'])
+    #AÑADIR EXAMENES A REQUISITOS PERFIL
+    app.add_url_rule('/perfil/examenes', view_func=asignacionesController.add_examen_perfil, methods=['POST'])
+    
     # OTROS REQUISITOS POR PERFIL
     app.add_url_rule('/perfil/otros', view_func=asignacionesController.get_otros_por_perfil, methods=['GET'])
+    #AÑADIR OTROS REQUISITOS A REQUISITOS PERFIL
+    app.add_url_rule('/perfil/otros', view_func=asignacionesController.add_otro_perfil, methods=['POST'])
+    
+    
     # DOTACION POR PERFIL
     app.add_url_rule('/perfil/dotacion', view_func=asignacionesController.get_dotacion_por_perfil, methods=['GET'])
+    #AÑADIR DOTACION A REQUISITOS PERFIL
+    app.add_url_rule('/perfil/dotacion', view_func=asignacionesController.add_dotacion_perfil, methods=['POST'])
+    
+    
+    # AÑADIR PERFIL A PERSONA
+    app.add_url_rule('/perfil/personas', view_func=asignacionesController.add_perfil_persona, methods=['POST'])
 
 
     #RUTAS CUMPLIMIENTOS
     #CURSOS POR PERSONA
     app.add_url_rule('/personal/cursos', view_func=cumplimientosController.get_cursos_por_persona, methods=['GET'])
+    #AÑADIR CURSO A PERSONA
+    app.add_url_rule('/personal/cursos', view_func=cumplimientosController.add_curso_persona, methods=['POST'])
+
     #EXAMENES POR PERSONA
     app.add_url_rule('/personal/examenes', view_func=cumplimientosController.get_examenes_por_persona, methods=['GET'])
+    # AÑADIR EXÁMEN A PERSONA
+    app.add_url_rule('/personal/examenes', view_func=cumplimientosController.add_examen_persona, methods=['POST'])
+
     #OTROS REQUISITOS POR PERSONA
     app.add_url_rule('/personal/otros', view_func=cumplimientosController.get_otros_por_persona, methods=['GET'])
+    #AÑADIR OTRO REQUISITO A PERSONA
+    app.add_url_rule('/personal/otros', view_func=cumplimientosController.add_otro_persona, methods=['POST'])
+
+    
     #DOTACION POR PERSONA
     app.add_url_rule('/personal/dotacion', view_func=cumplimientosController.get_dotacion_por_persona, methods=['GET'])
+    # AÑADIR DOTACION A PERSONA
+    app.add_url_rule('/personal/dotacion', view_func=cumplimientosController.add_dotacion_persona, methods=['POST'])
 
 
 
 
+    #CARGA DE ARCHIVOS
+    app.add_url_rule('/upload', view_func=uploadFiles.upload_files, methods=['POST'])
 
 
 

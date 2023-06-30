@@ -10,12 +10,7 @@ def get_otros():
     conn.close()
     for otro in otros:
         result.append(
-            {
-                'id': otro.id,
-                'nombre': otro.nombre,
-                'vigencia': otro.vigencia,
-                'costo': otro.costo
-            }
+            otro.__to_dict__()
         )
     return jsonify(result)
 
