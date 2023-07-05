@@ -4,6 +4,7 @@ from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
+
 class Dotacion(Base):
     __tablename__ = 'dotacion'
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -17,4 +18,4 @@ class Dotacion(Base):
             'nombre_dotacion': self.nombre,
             'vigencia_dotacion': self.vigencia,
             'costo_dotacion': self.costo
-       }
+        }
