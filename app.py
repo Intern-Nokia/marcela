@@ -4,7 +4,7 @@ from routes.routes import load_routes
 from flask_cors import CORS
 
 # App Config
-app = Flask(__name__)
+app = Flask(__name__, static_folder='files/')
 app.config['JSON_AS_ASCII'] = False
 CORS(app)
 create_tables('root', 'root')

@@ -10,7 +10,8 @@ from models.personal import Personal
 
 def get_cursos_por_persona():
     conn = connect('root', 'root')
-    cursos_persona = conn.query(CumplimentoCurso, Personal, Curso).join(Personal, Personal.CI == CumplimentoCurso.persona).join(Curso, Curso.id == CumplimentoCurso.curso).all()
+    cursos_persona = conn.query(CumplimentoCurso, Personal, Curso).join(
+        Personal, Personal.CI == CumplimentoCurso.persona).join(Curso, Curso.id == CumplimentoCurso.curso).all()
     result = []
     conn.close()
 
@@ -32,7 +33,8 @@ def get_cursos_por_persona():
 
 def get_examenes_por_persona():
     conn = connect('root', 'root')
-    examenes_persona = conn.query(CumplimientoExamen, Personal, Examen).join(Personal, Personal.CI == CumplimientoExamen.persona).join(Examen, Examen.id == CumplimientoExamen.examen).all()
+    examenes_persona = conn.query(CumplimientoExamen, Personal, Examen).join(
+        Personal, Personal.CI == CumplimientoExamen.persona).join(Examen, Examen.id == CumplimientoExamen.examen).all()
     result = []
     conn.close()
 
@@ -54,7 +56,8 @@ def get_examenes_por_persona():
 
 def get_otros_por_persona():
     conn = connect('root', 'root')
-    otros_persona = conn.query(CumplimientoOtro, Personal, Otro).join(Personal, Personal.CI == CumplimientoOtro.persona).join(Otro, Otro.id == CumplimientoOtro.otro).all()
+    otros_persona = conn.query(CumplimientoOtro, Personal, Otro).join(
+        Personal, Personal.CI == CumplimientoOtro.persona).join(Otro, Otro.id == CumplimientoOtro.otro).all()
     result = []
     conn.close()
 
@@ -76,7 +79,8 @@ def get_otros_por_persona():
 
 def get_dotacion_por_persona():
     conn = connect('root', 'root')
-    dotacion_persona = conn.query(CumplimientoDotacion, Personal, Dotacion).join(Personal, Personal.CI == CumplimientoDotacion.persona).join(Dotacion, Dotacion.id == CumplimientoDotacion.dotacion).all()
+    dotacion_persona = conn.query(CumplimientoDotacion, Personal, Dotacion).join(
+        Personal, Personal.CI == CumplimientoDotacion.persona).join(Dotacion, Dotacion.id == CumplimientoDotacion.dotacion).all()
     result = []
     conn.close()
 
@@ -99,7 +103,7 @@ def get_dotacion_por_persona():
 def add_curso_persona():
     conn = connect('root', 'root')
 
-    try: 
+    try:
         data = request.get_json()
         new_cumpimiento_curso = CumplimentoCurso(**data)
         conn.add(new_cumpimiento_curso)
@@ -111,10 +115,11 @@ def add_curso_persona():
         print(f'Error: {e}')
         return f'Error al asignar cumplimiento {e}'
 
+
 def add_examen_persona():
     conn = connect('root', 'root')
 
-    try: 
+    try:
         data = request.get_json()
         new_cumpimiento_examen = CumplimientoExamen(**data)
         conn.add(new_cumpimiento_examen)
@@ -129,7 +134,7 @@ def add_examen_persona():
 def add_dotacion_persona():
     conn = connect('root', 'root')
 
-    try: 
+    try:
         data = request.get_json()
         new_cumpimiento_dotacion = CumplimientoDotacion(**data)
         conn.add(new_cumpimiento_dotacion)
@@ -138,13 +143,14 @@ def add_dotacion_persona():
         return 'Dotacion añadido exitosamente', 201
     except Exception as e:
         conn.close()
+        print(e)
         return f'Error al asignar cumplimiento {e}'
 
 
 def add_otro_persona():
     conn = connect('root', 'root')
 
-    try: 
+    try:
         data = request.get_json()
         new_cumpimiento_otro = CumplimientoOtro(**data)
         conn.add(new_cumpimiento_otro)
@@ -154,6 +160,3 @@ def add_otro_persona():
     except Exception as e:
         conn.close()
         return f'Error al asignar cumplimiento {e}'
-
-
-

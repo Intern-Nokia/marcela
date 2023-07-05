@@ -9,11 +9,14 @@ from models.personal import Personal
 
 Base = declarative_base()
 
+
 class CumplimentoCurso(Base):
     __tablename__ = 'cumplimiento_cursos'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    persona = Column(String(50), ForeignKey(Personal.CI, ondelete='CASCADE', onupdate='CASCADE'))
-    curso = Column(Integer, ForeignKey(Curso.id, ondelete='CASCADE', onupdate='CASCADE'))
+    persona = Column(String(50), ForeignKey(
+        Personal.CI, ondelete='CASCADE', onupdate='CASCADE'))
+    curso = Column(Integer, ForeignKey(
+        Curso.id, ondelete='CASCADE', onupdate='CASCADE'))
     fecha_presentacion = Column(Date)
     fecha_vencimiento = Column(Date)
     certificado = Column(String(200))
@@ -28,11 +31,14 @@ class CumplimentoCurso(Base):
             'certificado_curso': self.certificado
         }
 
+
 class CumplimientoExamen(Base):
     __tablename__ = 'cumplimiento_examenes'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    persona = Column(String(50), ForeignKey(Personal.CI, ondelete='CASCADE', onupdate='CASCADE'))
-    examen = Column(Integer, ForeignKey(Examen.id, ondelete='CASCADE', onupdate='CASCADE'))
+    persona = Column(String(50), ForeignKey(
+        Personal.CI, ondelete='CASCADE', onupdate='CASCADE'))
+    examen = Column(Integer, ForeignKey(
+        Examen.id, ondelete='CASCADE', onupdate='CASCADE'))
     fecha_presentacion = Column(Date)
     fecha_vencimiento = Column(Date)
     certificado = Column(String(200))
@@ -46,12 +52,15 @@ class CumplimientoExamen(Base):
             'fecha_vencimiento_examen': self.fecha_vencimiento,
             'certificado_examen': self.certificado
         }
-    
+
+
 class CumplimientoDotacion(Base):
     __tablename__ = 'cumplimiento_dotacion'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    persona = Column(String(50), ForeignKey(Personal.CI, ondelete='CASCADE', onupdate='CASCADE'))
-    dotacion = Column(Integer, ForeignKey(Dotacion.id, ondelete='CASCADE', onupdate='CASCADE'))
+    persona = Column(String(50), ForeignKey(
+        Personal.CI, ondelete='CASCADE', onupdate='CASCADE'))
+    dotacion = Column(Integer, ForeignKey(
+        Dotacion.id, ondelete='CASCADE', onupdate='CASCADE'))
     fecha_presentacion = Column(Date)
     fecha_vencimiento = Column(Date)
 
@@ -64,11 +73,14 @@ class CumplimientoDotacion(Base):
             'fecha_vencimiento_dotacion': self.fecha_vencimiento,
         }
 
+
 class CumplimientoOtro(Base):
     __tablename__ = 'cumplimiento_otros'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    persona = Column(String(50), ForeignKey(Personal.CI, ondelete='CASCADE', onupdate='CASCADE'))
-    otro = Column(Integer, ForeignKey(Otro.id, ondelete='CASCADE', onupdate='CASCADE'))
+    persona = Column(String(50), ForeignKey(
+        Personal.CI, ondelete='CASCADE', onupdate='CASCADE'))
+    otro = Column(Integer, ForeignKey(
+        Otro.id, ondelete='CASCADE', onupdate='CASCADE'))
     fecha_presentacion = Column(Date)
     fecha_vencimiento = Column(Date)
     certificado = Column(String(200))

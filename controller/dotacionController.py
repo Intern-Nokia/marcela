@@ -20,9 +20,10 @@ def get_dotacion():
         )
     return jsonify(result)
 
+
 def add_dotacion():
     conn = connect('root', 'root')
-    
+
     try:
         data = request.get_json()
         new_dotacion = Dotacion(**data)
@@ -31,8 +32,10 @@ def add_dotacion():
         conn.close()
         return 'Dotación creada correctamente', 201
     except Exception as e:
-        return 'Error al crear el curso: {}'.format(e)
-    
+        print(e)
+        return 'Error al crear la dotacion: {}'.format(e)
+
+
 def edit_dotacion(id_dotacion):
     conn = connect('root', 'root')
     dotacion = conn.query(Dotacion).get(id_dotacion)
@@ -42,12 +45,11 @@ def edit_dotacion(id_dotacion):
 
         for key, value in data.items():
             setattr(dotacion, key, value)
-        
+
         conn.commit()
         conn.close()
         return 'Dotación actualizada exitosamente', 204
-    
+
     else:
         conn.close()
         return 'No se encontro la dotación', 404
-
