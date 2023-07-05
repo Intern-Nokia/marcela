@@ -1,66 +1,58 @@
-from flask import Blueprint, jsonify, request
+from flask import jsonify, request
 from db.connexion import connect
-from sqlalchemy import Column, String, or_
-from sqlalchemy.ext.declarative import declarative_base
-
-
-app = Blueprint('personal', __name__)
-
-Base = declarative_base()
-
-# Entity Personal from database
-
-
-class Personal(Base):
-    __tablename__ = '100 - personal'
-    legajo = Column('Legajo', String, primary_key=True)
-    name = Column('Nombre', String)
-    last_name = Column('Apellido Paterno', String)
-    rut = Column('RUT', String)
-
+from models.personal import Personal
 
 # Get all personal
+
+
 def get_personal():
     conn = connect('root', 'root')
-    personal = conn.query(Personal).all()
+    personal = conn.query(Personal).filter(Personal.activo == 1).all()
     result = []
     conn.close()
-    i = 0
     for person in personal:
         result.append(
-            {
-                'legajo': person.legajo,
-                'name': person.name,
-                'lastName': person.last_name,
-                'RUT': person.rut,
-                'image': "https://picsum.photos/200/300?random={}".format(i)
-            })
-        i = i + 1
+            person.__to_dict__()
+        )
 
     return jsonify(result)
 
 
-def get_personal_by_name(nombre):
-    # nombre = request.view_args['nombre']
-    conn = connect('root', 'root')
-    personal = conn.query(Personal).filter(or_(Personal.name.like(nombre + '%'),
-                                               Personal.legajo.like(
-                                                   nombre + '%'),
-                                               Personal.rut.like(nombre + '%'),
-                                               Personal.last_name.like(nombre + '%'))).all()
+def add_personal():
+    data = request.get_json()
+    new_user = Personal(**data)
 
-    result = []
+    conn = connect('root', 'root')
+    conn.add(new_user)
+    conn.commit()
     conn.close()
-    i = 0
-    for person in personal:
-        result.append(
-            {
-                'legajo': person.legajo,
-                'name': person.name,
-                'lastName': person.last_name,
-                'RUT': person.rut,
-                'image': "https://picsum.photos/200/300?random={}".format(i)
-            })
-        i = i + 1
+    return {"message": 'OK'}
+
+
+def edit_persona(rut):
+    conn = connect('root', 'root')
+    user = conn.query(Personal).get(rut)
+
+    if user:
+        new_data = request.get_json()
+
+        for key, value in new_data.items():
+            setattr(user, key, value)
+
+        conn.commit()
+        conn.close()
+        return 'Persona actualizada exitosamente', 204
+
+    else:
+        conn.close()
+        return 'No se encontro la persona.', 404
+
+
+def delete_personal(rut):
+    conn = connect('root', 'root')
+    user = conn.query(Personal).get(rut)
+    user.activo = 0
+    conn.commit()
+    conn.close()
 
     return jsonify(result)

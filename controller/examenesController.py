@@ -1,19 +1,7 @@
-from sqlalchemy import Column, Integer, String, Text
-from sqlalchemy.ext.declarative import declarative_base
-from flask import Blueprint, jsonify
+from flask import jsonify, request
 from db.connexion import connect
+from models.examenes import Examen
 
-app = Blueprint('examenes', __name__)
-
-Base = declarative_base()
-
-class Examen(Base):
-    __tablename__ = '141 - examenes'
-    id_examen = Column('ID Examen', Integer, primary_key=True, autoincrement=True)
-    nombre_examen = Column('Nombre examen', String(45))
-    observaciones = Column('Observaciones', Text)
-
-@app.route('/', methods=['GET'])
 def get_examenes():
     conn = connect('root', 'root')
     examenes = conn.query(Examen).all()
@@ -22,9 +10,43 @@ def get_examenes():
     for examen in examenes:
         result.append(
             {
-                'ID Examen': examen.id_examen,
-                'Nombre examen': examen.nombre_examen,
-                'Observaciones': examen.observaciones
+                'id': examen.id,
+                'nombre': examen.nombre,
+                'institucion': examen.institucion,
+                'vigencia': examen.vigencia,
+                'costo': examen.costo
             }
         )
     return jsonify(result)
+
+def add_examen():
+    conn = connect('root', 'root')
+    
+    try:
+        data = request.get_json()
+        new_examen = Examen(**data)
+        conn.add(new_examen)
+        conn.commit()
+        conn.close()
+        return 'Exámen creado correctamente', 201
+    except Exception as e:
+        return 'Error al crear el exámen: {}'.format(e)
+    
+def edit_examen(id_examen):
+    conn = connect('root', 'root')
+    examen = conn.query(Examen).get(id_examen)
+
+    if examen:
+        data = request.get_json()
+
+        for key, value in data.items():
+            setattr(examen, key, value)
+        
+        conn.commit()
+        conn.close()
+        return 'Exámen actualizada exitosamente', 204
+    
+    else:
+        conn.close()
+        return 'No se encontro el exámen', 404
+

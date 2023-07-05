@@ -1,39 +1,54 @@
-from flask import Blueprint, jsonify
+from flask import jsonify, request
 from db.connexion import connect
-from sqlalchemy import Column, String, Integer
-from sqlalchemy.ext.declarative import declarative_base
+from models.cursos import Curso
 
-Base = declarative_base()
-
-app = Blueprint('cursos', __name__)
-
-
-class Curso(Base):
-    __tablename__ = '121 - cursos'
-    id_curso = Column('ID Curso', Integer, primary_key=True, autoincrement=True)
-    nombre_curso = Column('Nombre curso', String(45))
-    duracion = Column('Duración', Integer)
-    organizacion = Column('Organización que lo dicta', String(45))
-    codigo_sence = Column('Código SENCE', String(45))
-    precio_estimado = Column('Precio estimado', Integer)
-
-@app.route('/', methods=['GET'])
 def get_cursos():
     conn = connect('root', 'root')
     cursos = conn.query(Curso).all()
     result = []
     conn.close()
-    i = 0
     for curso in cursos:
         result.append(
             {
-            'ID Curso': curso.id_curso,
-            'Nombre curso': curso.nombre_curso,
-            'Duración': curso.duracion,
-            'Organización que lo dicta': curso.organizacion,
-            'Código SENCE': curso.codigo_sence,
-            'Precio estimado': curso.precio_estimado,
-            'image': "https://picsum.photos/200/300?random={}".format(i)
-            })
-        i = i + 1
+                'id': curso.id,
+                'nombre': curso.nombre,
+                'institucion': curso.institucion,
+                'modalidad': curso.modalidad,
+                'vigencia': curso.vigencia,
+                'costo': curso.costo
+            }
+        )
     return jsonify(result)
+
+def add_curso():
+    conn = connect('root', 'root')
+    
+    try:
+        data = request.get_json()
+        new_curso = Curso(**data)
+        conn.add(new_curso)
+        conn.commit()
+        conn.close()
+        return 'Curso creado correctamente', 201
+    except Exception as e:
+        print(f'Error: {e}')
+        return 'Error al crear el curso: {}'.format(e)
+    
+def edit_curso(id_curso):
+    conn = connect('root', 'root')
+    curso = conn.query(Curso).get(id_curso)
+
+    if curso:
+        data = request.get_json()
+
+        for key, value in data.items():
+            setattr(curso, key, value)
+        
+        conn.commit()
+        conn.close()
+        return 'Curso actualizado exitosamente', 204
+    
+    else:
+        conn.close()
+        return 'No se encontro el curso', 404
+

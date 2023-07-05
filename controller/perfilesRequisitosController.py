@@ -1,34 +1,47 @@
-from flask import Blueprint, jsonify
+from flask import jsonify, request
 from db.connexion import connect
-from sqlalchemy import Column, String, Integer, Text
-from sqlalchemy.ext.declarative import declarative_base
 
-app = Blueprint('perfiles_requisitos', __name__)
-
-Base = declarative_base()
-
-# Entity PerfilRequisito from database
-class PerfilRequisito(Base):
-    __tablename__ = '200 - perfiles requisitos'
-    id_perfil = Column('ID Perfil', Integer, primary_key=True, autoincrement=True)
-    tipo_perfil = Column('Tipo perfil', String(45))
-    empresa_asociada = Column('Empresa asociada', String(45))
-    observaciones = Column('Observaciones', Text)
+from models.perfil import Perfil
 
 
-# Get all PerfilRequisito
-@app.route('/', methods=['GET'])
-def get_perfil_requisito():
+def get_perfiles():
     conn = connect('root', 'root')
-    perfiles_requisitos = conn.query(PerfilRequisito).all()
+    perfiles = conn.query(Perfil).all()
     result = []
     conn.close()
-    for perfil_requisito in perfiles_requisitos:
+    for perfil in perfiles:
         result.append(
-            {
-                'ID Perfil': perfil_requisito.id_perfil,
-                'Tipo perfil': perfil_requisito.tipo_perfil,
-                'Empresa asociada': perfil_requisito.empresa_asociada,
-                'Observaciones': perfil_requisito.observaciones
-            })
+            perfil.__to_dict__()
+        )
     return jsonify(result)
+
+def add_perfil():
+    conn = connect('root', 'root')
+    
+    try:
+        data = request.get_json()
+        new_perfil = Perfil(**data)
+        conn.add(new_perfil)
+        conn.commit()
+        conn.close()
+        return 'perfil creado correctamente', 201
+    except Exception as e:
+        return 'Error al crear el perfil: {}'.format(e)
+    
+def edit_perfil(id_perfil):
+    conn = connect('root', 'root')
+    perfil = conn.query(Perfil).get(id_perfil)
+
+    if perfil:
+        data = request.get_json()
+
+        for key, value in data.items():
+            setattr(perfil, key, value)
+        
+        conn.commit()
+        conn.close()
+        return 'perfil actualizado exitosamente', 204
+    
+    else:
+        conn.close()
+        return 'No se encontro el perfil', 404
